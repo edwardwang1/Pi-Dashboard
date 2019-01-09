@@ -30,9 +30,9 @@ class Example(QWidget):
 
     def initUI(self):
         blueButton = QPushButton("Blue")
-        blueButton.clicked.connect(self.on_click)
+        blueButton.clicked.connect(self.change_background_to_blue)
         redButton = QPushButton("Red")
-        redButton.clicked.connect(self.on_click_red)
+        redButton.clicked.connect(self.change_background_to_red)
 
         hbox = QHBoxLayout()
         hbox.addStretch(1)
@@ -49,11 +49,11 @@ class Example(QWidget):
         self.setWindowTitle('Buttons')
         self.show()
 
-    def on_click(self):
+    def change_background_to_blue(self):
         self.setStyleSheet("background-color: blue;")
         print("test")
 
-    def on_click_red(self):
+    def change_background_to_red(self):
         self.setStyleSheet("background-color: red;")
         print("Test2")
 
