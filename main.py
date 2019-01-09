@@ -57,6 +57,9 @@ class Example(QWidget):
         self.setStyleSheet("background-color: red;")
         print("Test2")
 
+    def empty(self):
+        pass
+
 
 def establishingPyroServer(sharedObj):
     daemon = Pyro4.Daemon()
