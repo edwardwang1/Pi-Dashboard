@@ -15,10 +15,13 @@ Last edited: August 2017
 
 import sys
 from PyQt5.QtWidgets import (QWidget, QPushButton,
-                             QHBoxLayout, QVBoxLayout, QApplication)
-from PyQt5.QtCore import pyqtSignal                             
+                             QHBoxLayout, QVBoxLayout, QApplication, QGridLayout, QLabel)
+from PyQt5.QtCore import pyqtSignal
+from PyQt5 import QtCore
 import Pyro4
 import threading
+
+import weather, digitalClock, analogClock
 
 @Pyro4.expose
 class Example(QWidget):
@@ -35,29 +38,44 @@ class Example(QWidget):
         blueButton.clicked.connect(self.change_background_to_blue)
         redButton = QPushButton("Red")
         redButton.clicked.connect(self.change_background_to_red)
+
+        throwawayWidget = QWidget()
+        throwawayWidget.showFullScreen()
         
         self.shutdownSignal.connect(self.closeProgram)
+        #self.showFullScreen()
+        #self.showNormal()
+        self.resize(throwawayWidget.width(), throwawayWidget.height())
+        self.resize(1500, 2000)
 
-        hbox = QHBoxLayout()
-        hbox.addStretch(1)
-        hbox.addWidget(blueButton)
-        hbox.addWidget(redButton)
+        self.aClock = analogClock.PyAnalogClock(parent=self, width=self.width()/1.2)
+        self.weath = weather.Weather(parent=self, width=self.width()/6)
+        print("weath", self.weath.width())
+        self.dClock = digitalClock.DigitalClock(parent=self, width=self.width()/6)
+        print(self.dClock.width(), self.dClock.height())
 
-        vbox = QVBoxLayout()
-        vbox.addStretch(1)
-        vbox.addLayout(hbox)
+        self.dClock.showFullScreen()
 
-        self.setLayout(vbox)
+        ## Moving widgets to proper locatoin, (from top, from left)
+        self.weath.move(int(self.width()/20), int(self.width()/20))
+        self.weath.resizeComponents()
 
-        self.setGeometry(300, 300, 300, 150)
-        self.setWindowTitle('Buttons')
+        self.dClock.move(self.width() - int(self.width()/20) - self.dClock.width(), int(self.width()/20))
+        self.aClock.move(int(self.width()/2 - self.aClock.width()/2), int(self.height()/2 - self.aClock.width()/2))
+
+
+
+        self.setStyleSheet("background-color:black")
+
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.show()
+
+
 
     def change_background_to_blue(self):
         self.setStyleSheet("background-color: blue;")
         print("test")
         exitWhenFalse = 0
-
 
     def change_background_to_red(self):
         self.setStyleSheet("background-color: red;")
@@ -70,7 +88,6 @@ class Example(QWidget):
     def shutdown(self):
         self.daemon.shutdown()
         self.shutdownSignal.emit()
-
         
     def closeProgram(self):
         print("closing")
