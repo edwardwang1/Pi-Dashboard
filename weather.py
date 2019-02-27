@@ -85,41 +85,79 @@ class Weather(QWidget):
 
         width = int(self.pic.width() * .85)
         height = int(self.pic.height() * .85)
+        onPi = True
+        
+        if onPi is False:
+            if "sun" in self.status:
+                self.pix = QPixmap("icons/clear.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
 
-        if "sun" in self.status:
-            self.pix = QPixmap("icons/clear.png")
-            self.pix = self.pix.scaled(width, height)
-            self.pic.setPixmap(self.pix)
+            elif "rain" in self.status or "shower" in self.status:
+                self.pix = QPixmap("icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
 
-        elif "rain" in self.status or "shower" in self.status:
-            self.pix = QPixmap("icons/rainy.png")
-            self.pix = self.pix.scaled(width, height)
-            self.pic.setPixmap(self.pix)
+            elif "snow" in self.status or "hail" in self.status:
+                self.pix = QPixmap("icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
 
-        elif "snow" in self.status or "hail" in self.status:
-            self.pix = QPixmap("icons/rainy.png")
-            self.pix = self.pix.scaled(width, height)
-            self.pic.setPixmap(self.pix)
+            elif "storm" in self.status or "lightning" in self.status:
+                self.pix = QPixmap("icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
 
-        elif "storm" in self.status or "lightning" in self.status:
-            self.pix = QPixmap("icons/rainy.png")
-            self.pix = self.pix.scaled(width, height)
-            self.pic.setPixmap(self.pix)
+            elif "mist" in self.status:
+                self.pix = QPixmap("icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
 
-        elif "mist" in self.status:
-            self.pix = QPixmap("icons/rainy.png")
-            self.pix = self.pix.scaled(width, height)
-            self.pic.setPixmap(self.pix)
+            elif "cloud" in self.status:
+                self.pix = QPixmap("icons/cloudy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
 
-        elif "cloud" in self.status:
-            self.pix = QPixmap("icons/cloudy.png")
-            self.pix = self.pix.scaled(width, height)
-            self.pic.setPixmap(self.pix)
-
+            else:
+                self.pix = QPixmap("icons/cloudy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
         else:
-            self.pix = QPixmap("icons/cloudy.png")
-            self.pix = self.pix.scaled(width, height)
-            self.pic.setPixmap(self.pix)
+            if "sun" in self.status:
+                self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/clear.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
+
+            elif "rain" in self.status or "shower" in self.status:
+                self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
+
+            elif "snow" in self.status or "hail" in self.status:
+                self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
+
+            elif "storm" in self.status or "lightning" in self.status:
+                self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
+
+            elif "mist" in self.status:
+                self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/rainy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
+
+            elif "cloud" in self.status:
+                self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/cloudy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
+
+            else:
+                self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/cloudy.png")
+                self.pix = self.pix.scaled(width, height)
+                self.pic.setPixmap(self.pix)
+        
 
         pass
 
