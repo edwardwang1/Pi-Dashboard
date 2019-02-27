@@ -46,7 +46,9 @@ class Example(QWidget):
         #self.showFullScreen()
         #self.showNormal()
         self.resize(throwawayWidget.width(), throwawayWidget.height())
-        self.resize(1500, 2000)
+
+        if throwawayWidget.width() > throwawayWidget.height():
+            self.resize(1500, 2000)
 
         self.aClock = analogClock.PyAnalogClock(parent=self, width=self.width()/1.2)
         self.weath = weather.Weather(parent=self, width=self.width()/6)
