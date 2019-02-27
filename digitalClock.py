@@ -64,10 +64,11 @@ class DigitalClock(QWidget):
             self.w = width
             self.h = self.w / width_to_height
             self.resize(self.w, self.h)
-            print(self.w, self.h)
-            print("noteno")
 
-        print("self", self.width(), self.height())
+            
+
+        print("digital clock size", self.width(), self.height())
+        
         #width, height
         self.hmLabel.resize(int(self.width() * 2 / 3), int(self.width() / width_to_height* 4/12)) #time takes up 2/3 height
         self.ampmLabel.resize(int(self.width() / 3), int(self.width() / width_to_height /2 * 4/12))
@@ -84,9 +85,18 @@ class DigitalClock(QWidget):
         self.dayOfWeekLabel.setAlignment(QtCore.Qt.AlignCenter)
         today = QDate.currentDate()
         dayofWeek = today.longDayName(today.dayOfWeek())
+        
+        
+
+        
+        date = str(today.toString(Qt.DefaultLocaleLongDate))
+        #print("date", date)
+        numLettersInDay = len(dayofWeek)
+        date = date[numLettersInDay + 1:]
 
 
-        self.dateLabel.setText(str(today.toString(Qt.DefaultLocaleLongDate)))
+        #self.dateLabel.setText(str(today.toString(Qt.DefaultLocaleLongDate)))
+        self.dateLabel.setText(date)
         self.dayOfWeekLabel.setText(str(dayofWeek))
         print(today.toString(Qt.DefaultLocaleLongDate))
         self.dateLabel.resize(int(self.width()), int(self.width() / width_to_height * 3/12))

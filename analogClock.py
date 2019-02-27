@@ -99,6 +99,10 @@ class PyAnalogClock(QWidget):
         self.secondColor = QColor(170, 170, 170)
         self.hourTickColor = QColor(102, 102, 102)
         self.minuteTickColor = QColor(102, 102, 102)
+        
+        self.show()
+        
+        print("analog", self.width(), self.height())
 
     def paintEvent(self, event):
         side = min(self.width(), self.height())

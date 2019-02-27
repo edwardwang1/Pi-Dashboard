@@ -45,6 +45,8 @@ class Weather(QWidget):
         self.getWeather()
         self.setStyleSheet("background-color: black")
         self.show()
+        
+        print("weather", self.width(), self.height())
 
     def getWeather(self):
         obs = self.owm.weather_at_place("Vancouver")
