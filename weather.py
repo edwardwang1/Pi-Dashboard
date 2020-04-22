@@ -3,13 +3,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QGridLayout
 from PyQt5.QtGui import QPixmap, QFont, QFontMetrics
 from PyQt5.QtCore import QSize
+import config
 
 from pyowm import OWM
 
 
 class Weather(QWidget):
-    #Width/Length = 4/6
-
     def __init__(self, parent=None, width=None):
         super(Weather, self).__init__(parent)
 
@@ -73,10 +72,10 @@ class Weather(QWidget):
 
         for item in self.humLabel, self.highlowLabel:
             item.setFont(self.getFont(self.humLabel.text(), self.humLabel))
-            item.setStyleSheet("color: rgb(170,170,170)")
+            item.setStyleSheet(config.font_colour)
 
         self.tempLabel.setFont(self.getFont(self.tempLabel.text(), self.tempLabel))
-        self.tempLabel.setStyleSheet("color: rgb(170,170,170)")
+        self.tempLabel.setStyleSheet(config.font_colour)
 
     def displayWeather(self):       #
         self.tempLabel.setText(self.temp)
@@ -157,9 +156,7 @@ class Weather(QWidget):
                 self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/cloudy.png")
                 self.pix = self.pix.scaled(width, height)
                 self.pic.setPixmap(self.pix)
-        
 
-        pass
 
     def getFont(self, text, rect):
         font = QFont()
@@ -176,7 +173,8 @@ class Weather(QWidget):
                 wouldfit = max(fs - 4, 1)
                 font.setPointSize(wouldfit)
                 break
-        font.setFamily("Times")
+        font.setFamily(config.font_family)
+        font.setBold(1)
         return font
 
 

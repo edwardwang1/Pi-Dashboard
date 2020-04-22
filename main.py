@@ -14,19 +14,18 @@ Last edited: August 2017
 """
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton,
-                             QHBoxLayout, QVBoxLayout, QApplication, QGridLayout, QLabel, QDesktopWidget)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QApplication, QGridLayout, QLabel, QDesktopWidget)
 from PyQt5.QtCore import pyqtSignal
 from PyQt5 import QtCore, QtGui
 import Pyro4
 import threading
 
-import weather, digitalClock, analogClock
+import weather, digitalClock, googleCalendar
 
-@Pyro4.expose
+
 class Example(QWidget):
     shutdownSignal = pyqtSignal()
-    
+
 
     def __init__(self, daemon):
         super().__init__()
@@ -40,7 +39,7 @@ class Example(QWidget):
         #redButton.clicked.connect(self.change_background_to_red)
 
 
-        
+
         self.shutdownSignal.connect(self.closeProgram)
         #self.showFullScreen()
         #self.showNormal()
@@ -48,34 +47,39 @@ class Example(QWidget):
         desktopWidth = desktopSize.width()
         desktopHeight = desktopSize.height()
         self.showFullScreen()
-        
-        if desktopWidth > desktopHeight: 
+
+        if desktopWidth > desktopHeight:
             self.resize(1500, 2000)
         else:
             self.resize(desktopWidth, desktopHeight)
 
         print(self.width(), self.height())
-        
+
         desktopSize = QDesktopWidget().screenGeometry()
 
 
-        self.aClock = analogClock.PyAnalogClock(parent=self, width=self.width()/1.2)
+
+        #self.aClock = analogClock.PyAnalogClock(parent=self, width=self.width()/1.2)
         self.weath = weather.Weather(parent=self, width=self.width()/6)
         #print("weath", self.weath.width())
         self.dClock = digitalClock.DigitalClock(parent=self, width=self.width()/4)
         #print(self.dClock.width(), self.dClock.height())
+
+        self.calendar = googleCalendar.GoogleCalendar(parent=self, width=self.width() / 4)
 
         self.dClock.showFullScreen()
 
         ## Moving widgets to proper locatoin, (from top, from left)
         self.weath.move(int(self.width()/20), int(self.width()/20))
         self.weath.resizeComponents()
-
         self.dClock.move(self.width() - int(self.width()/20) - self.dClock.width(), int(self.width()/20))
-        self.aClock.move(int(self.width()/2 - self.aClock.width()/2), int(self.height()/2 - self.aClock.width()/2))
+        self.calendar.move(int(self.width()/20), int(self.width()/20) + self.weath.height() + int(self.width()/10))
 
 
-    
+        #self.aClock.move(int(self.width()/2 - self.aClock.width()/2), int(self.height()/2 - self.aClock.width()/2))
+
+
+
         self.setStyleSheet("background-color:black")
 
         #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -92,7 +96,8 @@ class Example(QWidget):
 
     def empty(self):
         pass
-        
+
+    @Pyro4.expose
     @Pyro4.oneway
     def shutdown(self):
         self.daemon.shutdown()
@@ -134,6 +139,7 @@ atexit.register(wipeUriFile)
 
 
 if __name__ == '__main__':
+    print("begin")
     daemon = Pyro4.Daemon()
     app = QApplication(sys.argv)
     ex = Example(daemon)

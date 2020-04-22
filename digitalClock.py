@@ -45,8 +45,8 @@
 from PyQt5.QtCore import QTime, QTimer, QDate, Qt
 from PyQt5.QtWidgets import QApplication,  QLabel, QWidget, QGridLayout, QVBoxLayout
 from PyQt5 import QtCore
-
 from PyQt5.QtGui import QFont, QFontMetrics
+import config
 
 
 class DigitalClock(QWidget):
@@ -85,10 +85,7 @@ class DigitalClock(QWidget):
         self.dayOfWeekLabel.setAlignment(QtCore.Qt.AlignCenter)
         today = QDate.currentDate()
         dayofWeek = today.longDayName(today.dayOfWeek())
-        
-        
 
-        
         date = str(today.toString(Qt.DefaultLocaleLongDate))
         #print("date", date)
         numLettersInDay = len(dayofWeek)
@@ -161,7 +158,8 @@ class DigitalClock(QWidget):
                 wouldfit = max(fs - 6, 1)
                 font.setPointSize(wouldfit)
                 break
-        font.setFamily("Times")
+        font.setFamily(config.font_family)
+        font.setBold(1)
         return font
 
 
