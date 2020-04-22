@@ -74,8 +74,7 @@ class Example(QWidget):
         self.weath.resizeComponents()
         self.dClock.move(self.width() - int(self.width()/20) - self.dClock.width(), int(self.width()/20))
         self.calendar.move(int(self.width()/20), int(self.width()/20) + self.weath.height() + int(self.width()/10))
-
-
+        self.calendar.update()
         #self.aClock.move(int(self.width()/2 - self.aClock.width()/2), int(self.height()/2 - self.aClock.width()/2))
 
 

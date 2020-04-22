@@ -64,6 +64,7 @@ class GoogleCalendar(QWidget):
         timer.timeout.connect(self.update)
         timer.start(1000 * 60 * 60 )
 
+        self.show()
 
     def update(self):
         """Shows basic usage of the Google Calendar API.
@@ -124,6 +125,7 @@ class GoogleCalendar(QWidget):
         for i in range(len(event_starts)):
             if len(event_starts[i]) > 10:
                 #converting to UTC and removing time zone
+                event_starts[i] = event_starts[i][:22] + event_starts[i][23:]
                 event_starts[i] = datetime.datetime.strptime(event_starts[i], "%Y-%m-%dT%H:%M:%S%z")
                 event_starts[i] = event_starts[i].astimezone(datetime.timezone.utc)
                 event_starts[i] = event_starts[i].replace(tzinfo=None)
