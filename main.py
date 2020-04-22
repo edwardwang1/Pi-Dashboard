@@ -65,7 +65,7 @@ class Example(QWidget):
         self.dClock = digitalClock.DigitalClock(parent=self, width=self.width()/4)
         #print(self.dClock.width(), self.dClock.height())
 
-        self.calendar = googleCalendar.GoogleCalendar(parent=self, width=self.width() / 4)
+        self.calendar = googleCalendar.GoogleCalendar(parent=self, width=self.width()  * 3 / 8, )
 
         self.dClock.showFullScreen()
 

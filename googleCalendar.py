@@ -25,7 +25,7 @@ font.setBold(1)
 
 class GoogleCalendar(QWidget):
     def __init__(self, width=None, parent=None):
-        width_to_height = 4 / 3
+        self.width_to_row_height = 7
         super(GoogleCalendar, self).__init__(parent)
 
         ##Clock Part
@@ -35,19 +35,9 @@ class GoogleCalendar(QWidget):
         self.weekEvents = QLabel("test events \n test events")
 
         self.calendarLayout = QVBoxLayout()
-        self.setStyleSheet("background-color: black")
-        self.setStyleSheet("background-color: black")
-        if width is not None:
-            self.w = width
-            self.h = self.w / width_to_height
-            self.resize(self.w, self.h)
+        self.setStyleSheet("background-color: red")
 
         print("calendar size", self.width(), self.height())
-
-        self.todayLabel.resize(self.width(), int(self.width() / (max_week_events + max_today_events + 2)))
-        self.weekLabel.resize(self.width(), int(self.width() / (max_week_events + max_today_events + 2)))
-        self.todayEvents.resize(self.width(), int(self.width() * max_today_events / (max_week_events + max_today_events + 2)))
-        self.weekEvents.resize(self.width(), int(self.width() * max_week_events / (max_week_events + max_today_events + 2)))
 
         for label in self.todayLabel, self.weekLabel, self.todayEvents, self.weekEvents:
             label.setStyleSheet(config.font_colour)
@@ -66,10 +56,15 @@ class GoogleCalendar(QWidget):
 
         self.show()
 
+    def custom_resize(self, num_today_events, num_week_events):
+        row_height = self.width() / self.width_to_row_height
+        self.resize(self.width(), row_height * (2 + num_today_events + num_week_events))
+        self.todayLabel.resize(self.width(), row_height)
+        self.weekLabel.resize(self.width(), row_height)
+        self.todayEvents.resize(self.width(), row_height * num_today_events)
+        self.weekEvents.resize(self.width(), row_height * num_week_events)
+
     def update(self):
-        """Shows basic usage of the Google Calendar API.
-        Prints the start and name of the next 10 events on the user's calendar.
-        """
         creds = None
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
@@ -90,10 +85,6 @@ class GoogleCalendar(QWidget):
                 pickle.dump(creds, token)
 
         service = build('calendar', 'v3', credentials=creds)
-
-        #Iterate through all calenders and get events
-        #Combine events
-        #Sort events
 
         #Gathering events from all calendars
         page_token = None
@@ -154,14 +145,19 @@ class GoogleCalendar(QWidget):
         week_counter = 0
         today_str = ""
         week_str = ""
+        num_today_events = len(today_events_idxs)
+        num_week_events = len(event_starts) - num_today_events
+        if num_today_events == 0:
+            today_str = "No events today"
+            num_today_events = 1
+        if num_week_events == 0:
+            week_str = "No upcoming events"
+            num_week_events = 1
         for i in range(len(event_starts)):
-            if len(today_events_idxs) == 0:
-                today_str = "No events today"
             if i in today_events_idxs:
                 if today_counter < max_today_events:
                     today_counter += 1
                     today_str += ((event_starts[i].strftime("%I:%M %p") + "  " +  descriptions[i]) + "\n")
-
             else:
                 if week_counter < max_week_events:
                     week_counter += 1
@@ -169,6 +165,8 @@ class GoogleCalendar(QWidget):
 
         self.todayEvents.setText(today_str)
         self.weekEvents.setText(week_str)
+
+        self.custom_resize(num_today_events, num_week_events)
 
         ##Now creating the widget
     def getFont(self, text, rect):
