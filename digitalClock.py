@@ -65,10 +65,6 @@ class DigitalClock(QWidget):
             self.h = self.w / width_to_height
             self.resize(self.w, self.h)
 
-            
-
-        print("digital clock size", self.width(), self.height())
-        
         #width, height
         self.hmLabel.resize(int(self.width() * 2 / 3), int(self.width() / width_to_height* 4/12)) #time takes up 2/3 height
         self.ampmLabel.resize(int(self.width() / 3), int(self.width() / width_to_height /2 * 4/12))
@@ -87,7 +83,6 @@ class DigitalClock(QWidget):
         dayofWeek = today.longDayName(today.dayOfWeek())
 
         date = str(today.toString(Qt.DefaultLocaleLongDate))
-        #print("date", date)
         numLettersInDay = len(dayofWeek)
         date = date[numLettersInDay + 1:]
 
@@ -95,7 +90,6 @@ class DigitalClock(QWidget):
         #self.dateLabel.setText(str(today.toString(Qt.DefaultLocaleLongDate)))
         self.dateLabel.setText(date)
         self.dayOfWeekLabel.setText(str(dayofWeek))
-        print(today.toString(Qt.DefaultLocaleLongDate))
         self.dateLabel.resize(int(self.width()), int(self.width() / width_to_height * 3/12))
         self.dayOfWeekLabel.resize(int(self.width()), int(self.width() / width_to_height * 5/12))
 
@@ -107,14 +101,11 @@ class DigitalClock(QWidget):
 
         for item in self.hmLabel, self.ampmLabel, self.sLabel, self.dateLabel, self.dayOfWeekLabel:
             item.setFont(self.getFont(item.text(), item))
-            item.setStyleSheet("color: rgb(170,170,170)")
+            item.setStyleSheet(config.font_colour)
 
         timer = QTimer(self)
         timer.timeout.connect(self.showTime)
         timer.start(1000)
-
-
-        print(self.dateAndTimeLayout.geometry().width(), self.dateAndTimeLayout.geometry().height() )
 
         self.setLayout(self.dateAndTimeLayout)
         self.showTime()

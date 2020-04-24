@@ -44,8 +44,6 @@ class Weather(QWidget):
         self.getWeather()
         self.setStyleSheet("background-color: black")
         self.show()
-        
-        print("weather", self.width(), self.height())
 
     def getWeather(self):
         obs = self.owm.weather_at_place("Vancouver")
@@ -60,7 +58,6 @@ class Weather(QWidget):
         self.temp_min = str(round(tempDict['temp_min']))
         self.hum = "☂ " + str(round(humidity)) + "%"
 
-        print(self.temp, self.status)
         self.displayWeather()
 
     def resizeComponents(self):
@@ -156,7 +153,6 @@ class Weather(QWidget):
                 self.pix = QPixmap("/home/pi/Desktop/RPiDashboard/icons/cloudy.png")
                 self.pix = self.pix.scaled(width, height)
                 self.pic.setPixmap(self.pix)
-
 
     def getFont(self, text, rect):
         font = QFont()

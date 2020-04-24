@@ -19,6 +19,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5 import QtCore, QtGui
 import Pyro4
 import threading
+import atexit
 
 import weather, digitalClock, googleCalendar
 
@@ -33,40 +34,21 @@ class Example(QWidget):
         self.initUI()
 
     def initUI(self):
-        #blueButton = QPushButton("Blue")
-        #blueButton.clicked.connect(self.change_background_to_blue)
-        #redButton = QPushButton("Red")
-        #redButton.clicked.connect(self.change_background_to_red)
-
-
-
         self.shutdownSignal.connect(self.closeProgram)
-        #self.showFullScreen()
-        #self.showNormal()
         desktopSize = QDesktopWidget().screenGeometry()
         desktopWidth = desktopSize.width()
         desktopHeight = desktopSize.height()
         self.showFullScreen()
 
         if desktopWidth > desktopHeight:
-            self.resize(1500, 2000)
+            self.resize(1050/1.5, 1680/1.5)
         else:
             self.resize(desktopWidth, desktopHeight)
 
-        print(self.width(), self.height())
-
-        desktopSize = QDesktopWidget().screenGeometry()
-
-
-
-        #self.aClock = analogClock.PyAnalogClock(parent=self, width=self.width()/1.2)
         self.weath = weather.Weather(parent=self, width=self.width()/6)
-        #print("weath", self.weath.width())
         self.dClock = digitalClock.DigitalClock(parent=self, width=self.width()/4)
-        #print(self.dClock.width(), self.dClock.height())
 
-        self.calendar = googleCalendar.GoogleCalendar(parent=self, width=self.width()  * 3 / 8, )
-
+        self.calendar = googleCalendar.GoogleCalendar(parent=self, width=self.width() /6)
         self.dClock.showFullScreen()
 
         ## Moving widgets to proper locatoin, (from top, from left)
@@ -76,7 +58,6 @@ class Example(QWidget):
         self.calendar.move(int(self.width()/20), int(self.width()/20) + self.weath.height() + int(self.width()/10))
         self.calendar.update()
         #self.aClock.move(int(self.width()/2 - self.aClock.width()/2), int(self.height()/2 - self.aClock.width()/2))
-
 
 
         self.setStyleSheet("background-color:black")
@@ -110,8 +91,6 @@ class Example(QWidget):
 def establishingPyroServer(sharedObj):
     
     uri = daemon.register(sharedObj)
-    print(uri)
-    #text_file = open("C:\\Users\\Edward\\Desktop\\Output.txt", "w")
     text_file = open("uri.txt", "w")
     text_file.write(str(uri))
     text_file.close()
@@ -133,7 +112,7 @@ class PyroThread(threading.Thread):
     def run(self):
         establishingPyroServer(self.shared)
 
-import atexit
+
 atexit.register(wipeUriFile)
 
 
