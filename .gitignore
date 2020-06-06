@@ -1,7 +1,8 @@
-.pyc
+*.pyc
 .idea
 .DS_Store
 .py~
 *.json
 uri.txt
 token.pickle
+__pycache__

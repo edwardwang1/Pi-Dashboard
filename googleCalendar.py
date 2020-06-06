@@ -8,7 +8,7 @@ from google.auth.transport.requests import Request
 import config
 
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QFrame, QListWidgetItem, QListWidget, QSizePolicy, QAbstractScrollArea
 from PyQt5.QtGui import QFont, QFontMetrics
 
 # If modifying these scopes, delete the file token.pickle.
@@ -18,39 +18,53 @@ tz = config.tz
 max_today_events = 5
 max_week_events = 10
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 class GoogleCalendar(QWidget):
+    def sizeHint(self):
+        return(self.size())
+        
     def __init__(self, width=None, parent=None):
-        self.width_to_row_height = 11
+        self.width_to_row_height = config.width_to_row_height
         super(GoogleCalendar, self).__init__(parent)
-
+        self.todayEventsList = []
+        self.weekEventsList = []
+        
+        self.setSizePolicy(
+            QSizePolicy.Maximum,
+            QSizePolicy.Maximum
+        )
         if width is not None:
             self.resize(width, self.height())
 
         self.todayLabel = QLabel("Today's Events")
         self.weekLabel = QLabel("This Week's Events")
-        self.todayEvents = QLabel("test events \n test events")
-        self.weekEvents = QLabel("test events \n test events")
+        
+        self.todayEvents = QListWidget()
+        self.todayEvents.setFrameShape(QFrame.NoFrame)
+        self.todayEvents.setSpacing(0)
 
-        self.setStyleSheet("background-color: black")
-
+        
+        self.weekEvents = QListWidget()
+        self.weekEvents.setFrameShape(QFrame.NoFrame)
+        self.weekEvents.setSpacing(0)
+        
         self.calendarLayout = QVBoxLayout()
         self.row_height = self.width() / self.width_to_row_height
 
         # resizing title labels and setting fonts
         for item in self.todayLabel, self.weekLabel:
             item.resize(self.width(), self.row_height * 1.5)
+
         self.titleFont = self.getFont(self.todayLabel.text(), self.todayLabel)
         self.titleFont.setBold(1)
         self.eventFont = QFont()
         self.eventFont.setFamily(self.titleFont.family());
         self.eventFont.setPointSize(self.titleFont.pointSize() - 6)
+              
+        
         for item in self.todayLabel, self.weekLabel:
             item.setFont(self.titleFont)
-            item.setStyleSheet(config.font_colour)
-
-        for item in self.todayEvents, self.weekEvents:
-            item.setFont(self.eventFont)
             item.setStyleSheet(config.font_colour)
 
         self.calendarLayout.addWidget(self.todayLabel)
@@ -58,27 +72,37 @@ class GoogleCalendar(QWidget):
         self.calendarLayout.addWidget(self.weekLabel)
         self.calendarLayout.addWidget(self.weekEvents)
 
+        self.calendarLayout.setSpacing(0)
         self.setLayout(self.calendarLayout)
-
+        
         timer = QTimer(self)
         timer.timeout.connect(self.update)
         timer.start(1000 * 60 * 60)
 
         self.update()
         self.show()
+        
 
     def resize_rows(self, num_today_events, num_week_events):
-        self.resize(self.width(), self.row_height * (2 + num_today_events + num_week_events))
-        self.todayEvents.resize(self.width(), self.row_height * num_today_events)
-        self.weekEvents.resize(self.width(), self.row_height * num_week_events)
+        self.resize(self.width(), self.row_height * (3 + num_today_events + num_week_events))
+        self.calendarLayout.setStretchFactor(self.todayLabel, 1.5)
+        self.calendarLayout.setStretchFactor(self.todayEvents, num_today_events)
+        self.calendarLayout.setStretchFactor(self.weekLabel, 1.5)
+        self.calendarLayout.setStretchFactor(self.weekEvents, num_week_events)
+        self.todayEvents.setFixedSize(self.width(), num_today_events * self.row_height)
+        self.weekEvents.setFixedSize(self.width(), num_week_events * self.row_height)
+
 
     def update(self):
         creds = None
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
+        token_path = os.path.join(dir_path, 'token.pickle')
+        credentials_path = os.path.join(dir_path, 'credentials.json')
+        
+        if os.path.exists(token_path):
+            with open(token_path, 'rb') as token:
                 creds = pickle.load(token)
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
@@ -86,10 +110,10 @@ class GoogleCalendar(QWidget):
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', SCOPES)
+                    credentials_path, SCOPES)
                 creds = flow.run_local_server()
             # Save the credentials for the next run
-            with open('token.pickle', 'wb') as token:
+            with open(token_path, 'wb') as token:
                 pickle.dump(creds, token)
 
         service = build('calendar', 'v3', credentials=creds)
@@ -149,36 +173,47 @@ class GoogleCalendar(QWidget):
         # filling out widget
         today_counter = 0
         week_counter = 0
-        today_str = ""
-        week_str = ""
         num_today_events = len(today_events_idxs)
         num_week_events = len(event_starts) - num_today_events
+        self.todayEventsList.clear()
+        self.weekEventsList.clear()
         if num_today_events == 0:
-            today_str = "No events today"
+            self.todayEventsList.append("No events today")
             num_today_events = 1
         if num_week_events == 0:
-            week_str = "No upcoming events"
+            self.weekEventsList.append("No upcoming events")
             num_week_events = 1
+            
+        #Changing string lengths
+        for i in range(len(descriptions)):
+            descriptions[i] = descriptions[i][:20] + "..."
         for i in range(len(event_starts)):
             if i in today_events_idxs:
                 if today_counter < max_today_events:
                     today_counter += 1
-                    today_str += ((event_starts[i].strftime("%I:%M %p") + "  " + descriptions[i]) + "\n")
+                    self.todayEventsList.append((event_starts[i].strftime("%I:%M %p") + "  " + descriptions[i]))
             else:
                 if week_counter < max_week_events:
                     week_counter += 1
-                    week_str += ((event_starts[i].strftime("%b %d") + "      " + descriptions[i]) + "\n")
-
-        if today_str[-1] == "\n":
-            today_str = today_str[:-1]
-
-        if week_str[-1] == "\n":
-            week_str = week_str[:-1]
-
-        self.todayEvents.setText(today_str)
-        self.weekEvents.setText(week_str)
-
+                    self.weekEventsList.append((event_starts[i].strftime("%b %d") + "      " + descriptions[i]))
         self.resize_rows(num_today_events, num_week_events)
+        for i in range(len(self.todayEventsList)):
+            label = QLabel(self.todayEventsList[i])
+            label.setFixedSize(self.width(), self.row_height)
+            label.setFont(self.eventFont)
+            label.setStyleSheet(config.font_colour)
+            item = QListWidgetItem(self.todayEvents)
+            self.todayEvents.addItem(item)
+            self.todayEvents.setItemWidget(item, label)
+            
+        for i in range(len(self.weekEventsList)):
+            label = QLabel(self.weekEventsList[i])
+            label.setFixedSize(self.width(), self.row_height)
+            label.setFont(self.eventFont)
+            label.setStyleSheet(config.font_colour)
+            item = QListWidgetItem(self.weekEvents)
+            self.weekEvents.addItem(item)
+            self.weekEvents.setItemWidget(item, label)      
 
     def getFont(self, text, rect):
         font = QFont()

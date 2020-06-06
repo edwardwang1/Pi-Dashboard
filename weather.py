@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QGridLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QGridLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QFont, QFontMetrics
 from PyQt5.QtCore import QSize
 import config
@@ -12,6 +12,10 @@ class Weather(QWidget):
     def __init__(self, parent=None, width=None):
         super(Weather, self).__init__(parent)
 
+        self.setSizePolicy(
+            QSizePolicy.Maximum,
+            QSizePolicy.Maximum
+        )
         self.pix = QPixmap("")
         self.pic = QLabel(self)
         if width is not None:
@@ -42,7 +46,6 @@ class Weather(QWidget):
         self.resizeComponents()
 
         self.getWeather()
-        self.setStyleSheet("background-color: black")
         self.show()
 
     def getWeather(self):
@@ -166,7 +169,7 @@ class Weather(QWidget):
             if br.height() <= cr.height() and br.width() <= cr.width():
                 fs += 1
             else:
-                wouldfit = max(fs - 4, 1)
+                wouldfit = max(fs - 5, 1)
                 font.setPointSize(wouldfit)
                 break
         font.setFamily(config.font_family)

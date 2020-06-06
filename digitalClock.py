@@ -43,7 +43,7 @@
 
 
 from PyQt5.QtCore import QTime, QTimer, QDate, Qt
-from PyQt5.QtWidgets import QApplication,  QLabel, QWidget, QGridLayout, QVBoxLayout
+from PyQt5.QtWidgets import QApplication,  QLabel, QWidget, QGridLayout, QVBoxLayout, QSizePolicy
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont, QFontMetrics
 import config
@@ -53,6 +53,11 @@ class DigitalClock(QWidget):
     def __init__(self, width=None, parent=None):
         width_to_height = 4 / 3
         super(DigitalClock, self).__init__(parent)
+        
+        self.setSizePolicy(
+            QSizePolicy.Maximum,
+            QSizePolicy.Maximum
+        )
 
         ##Clock Part
         self.hmLabel = QLabel("88:88")
