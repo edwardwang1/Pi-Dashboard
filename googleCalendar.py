@@ -78,7 +78,7 @@ class GoogleCalendar(QWidget):
         timer = QTimer(self)
         timer.timeout.connect(self.update)
         timer.start(1000 * 60 * 60)
-
+        
         self.update()
         self.show()
         
@@ -94,6 +94,8 @@ class GoogleCalendar(QWidget):
 
 
     def update(self):
+        self.todayEvents.clear()
+        self.weekEvents.clear()
         creds = None
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
