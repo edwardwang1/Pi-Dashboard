@@ -25,7 +25,7 @@ For any remaining packages, `pip install package` should do the trick.
 
 If you want to use the calendar widget, you will need enable the Google Calendar API and download the credentials.json file into the main directory. Follow the instructions [here](https://developers.google.com/calendar/quickstart/python).
 
-## Weather Icon attributions
+## Weather icon attributions
 The weather icons were downloaded from [The Noun Project](https://thenounproject.com/)
 
 clear.png Author: [Sébastien Robaszkiewicz](https://thenounproject.com/icon/408567/)
