@@ -38,7 +38,7 @@ class Notes(QWidget):
         self.noteFont = QFont()
         self.noteFont.setFamily(self.titleFont.family());
         self.noteFont.setPointSize(self.titleFont.pointSize() - 6)
-        self.noteFont.setBold(0)
+        self.noteFont.setBold(1)
         
         ##Setting Title Font
         self.title.setFont(self.titleFont)

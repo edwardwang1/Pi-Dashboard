@@ -61,6 +61,7 @@ class GoogleCalendar(QWidget):
         self.eventFont = QFont()
         self.eventFont.setFamily(self.titleFont.family());
         self.eventFont.setPointSize(self.titleFont.pointSize() - 6)
+        self.eventFont.setBold(1)
               
         
         for item in self.todayLabel, self.weekLabel:
