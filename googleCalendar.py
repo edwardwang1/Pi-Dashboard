@@ -6,6 +6,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import config
+import dateutil.parser
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QFrame, QListWidgetItem, QListWidget, QSizePolicy, QAbstractScrollArea
@@ -152,7 +153,8 @@ class GoogleCalendar(QWidget):
             if len(event_starts[i]) > 10:
                 # converting to UTC and removing time zone
                 event_starts[i] = event_starts[i][:22] + event_starts[i][23:]
-                event_starts[i] = datetime.datetime.strptime(event_starts[i], "%Y-%m-%dT%H:%M:%S%z")
+                #event_starts[i] = datetime.datetime.strptime(event_starts[i], "%Y-%m-%dT%H:%M:%S%z")
+                event_starts[i] = dateutil.parser.parse(event_starts[i])
                 event_starts[i] = event_starts[i].astimezone(datetime.timezone.utc)
                 event_starts[i] = event_starts[i].replace(tzinfo=None)
 
